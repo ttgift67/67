@@ -177,7 +177,7 @@
 
     <div class="header">
         <div class="menu-icon">☰ Меню</div>
-        <div class="wallet-info">👛 <span id="balance">50</span> ⭐</div>
+        <div class="wallet-info">👛 <span id="balance">0</span> ⭐</div>
     </div>
 
     <div class="container">
@@ -252,7 +252,18 @@
         let tg = window.Telegram.WebApp;
         try { tg.expand(); } catch(e) {}
 
-        let balance = 50;
+        // Загружаем баланс игрока из памяти устройства. Если игрока нет — ставим 0.
+        let balance = parseInt(localStorage.getItem('galaxy_balance'));
+        if (isNaN(balance)) {
+            balance = 0;
+        }
+        document.getElementById('balance').innerText = balance;
+
+        // Функция сохранения баланса
+        function saveBalance() {
+            localStorage.setItem('galaxy_balance', balance);
+            document.getElementById('balance').innerText = balance;
+        }
 
         const casesData = {
             free: {
@@ -312,7 +323,7 @@
             }
 
             balance -= caseConfig.price;
-            document.getElementById('balance').innerText = balance;
+            saveBalance();
 
             const modal = document.getElementById('modal');
             const modalTitle = document.getElementById('modal-title');
@@ -366,7 +377,7 @@
                 dropText.innerText = `Вы выиграли: ${currentWin.name}`;
                 if (currentWin.value > 0) {
                     balance += currentWin.value;
-                    document.getElementById('balance').innerText = balance;
+                    saveBalance();
                 }
                 closeBtn.style.display = 'block';
             }, 4100);
