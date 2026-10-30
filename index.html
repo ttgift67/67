@@ -49,7 +49,6 @@
             font-size: 18px;
             font-weight: bold;
             margin-bottom: 5px;
-            letter-spacing: 0.5px;
         }
         .case-card {
             background: #ffffff;
@@ -69,7 +68,6 @@
         .case-name {
             font-weight: bold;
             font-size: 15px;
-            margin-bottom: 4px;
         }
         .case-price {
             background: #e8e1f5;
@@ -84,8 +82,6 @@
         .case-price:active {
             transform: scale(0.95);
         }
-
-        /* Модальное окно рулетки */
         .modal {
             display: none;
             position: fixed;
@@ -112,8 +108,6 @@
             margin-top: 0;
             color: #5c3d99;
         }
-
-        /* Окно рулетки */
         .roulette-window {
             position: relative;
             width: 100%;
@@ -161,14 +155,11 @@
             font-weight: bold;
             margin-top: 4px;
             color: #555;
-            padding: 0 2px;
-            text-align: center;
+            width: 72px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
-            width: 72px;
         }
-
         .close-btn {
             background: #7b5cbe;
             color: white;
@@ -195,10 +186,7 @@
         <div class="case-card">
             <div class="case-info">
                 <div style="font-size: 32px;">🎁</div>
-                <div>
-                    <div class="case-name">Galaxy Free</div>
-                    <div style="font-size: 12px; color: #777;">Дает ровно 10 ⭐</div>
-                </div>
+                <div class="case-name">Galaxy Free</div>
             </div>
             <button class="case-price" onclick="openCase('free')">БЕСПЛАТНО</button>
         </div>
@@ -248,7 +236,6 @@
         </div>
     </div>
 
-    <!-- Модальное окно рулетки -->
     <div class="modal" id="modal">
         <div class="modal-content">
             <h3 id="modal-title">Открытие кейса</h3>
@@ -263,20 +250,18 @@
 
     <script>
         let tg = window.Telegram.WebApp;
-        tg.expand();
+        try { tg.expand(); } catch(e) {}
 
         let balance = 50;
 
-        // Наборы кейсов: для каждого кейса свои призы и шансы (weight)
         const casesData = {
             free: {
                 name: "Galaxy Free",
                 price: 0,
                 items: [
-                    { name: "+10 ⭐", icon: "⭐", value: 10, weight: 100 }, // 100% падает 10 звезд
-                    { name: "NFT Galaxy", icon: "🖼️", value: 0, weight: 25 }, // Картинка для красоты
-                    { name: "Telegram Gift", icon: "🎁", value: 0, weight: 25 },
-                    { name: "Rare NFT", icon: "💎", value: 0, weight: 10 }
+                    { name: "+10 ⭐", icon: "⭐", value: 10, weight: 100 },
+                    { name: "NFT Galaxy", icon: "🖼️", value: 0, weight: 20 },
+                    { name: "Gift", icon: "🎁", value: 0, weight: 20 }
                 ]
             },
             bomj: {
@@ -285,8 +270,7 @@
                 items: [
                     { name: "Пусто", icon: "❌", value: 0, weight: 50 },
                     { name: "+5 ⭐", icon: "⭐", value: 5, weight: 35 },
-                    { name: "+15 ⭐", icon: "💎", value: 15, weight: 12 },
-                    { name: "NFT Shard", icon: "🖼️", value: 0, weight: 3 }
+                    { name: "+15 ⭐", icon: "💎", value: 15, weight: 15 }
                 ]
             },
             fire: {
@@ -295,8 +279,7 @@
                 items: [
                     { name: "Пусто", icon: "❌", value: 0, weight: 45 },
                     { name: "+10 ⭐", icon: "⭐", value: 10, weight: 35 },
-                    { name: "+40 ⭐", icon: "🔥", value: 40, weight: 17 },
-                    { name: "Fire NFT", icon: "🎨", value: 0, weight: 3 }
+                    { name: "+40 ⭐", icon: "🔥", value: 40, weight: 20 }
                 ]
             },
             clock: {
@@ -305,8 +288,7 @@
                 items: [
                     { name: "Пусто", icon: "❌", value: 0, weight: 40 },
                     { name: "+15 ⭐", icon: "⭐", value: 15, weight: 40 },
-                    { name: "+55 ⭐", icon: "⏳", value: 55, weight: 17 },
-                    { name: "Time NFT", icon: "⌚", value: 0, weight: 3 }
+                    { name: "+55 ⭐", icon: "⏳", value: 55, weight: 20 }
                 ]
             },
             fifty: {
@@ -314,28 +296,10 @@
                 price: 45,
                 items: [
                     { name: "Пусто", icon: "❌", value: 0, weight: 50 },
-                    { name: "+95 ⭐", icon: "👑", value: 95, weight: 45 },
-                    { name: "Golden NFT", icon: "🏆", value: 0, weight: 5 }
+                    { name: "+95 ⭐", icon: "👑", value: 95, weight: 50 }
                 ]
             }
         };
-
-        function getRandomItemFromCase(caseConfig) {
-            let winItems = caseConfig.items.filter(item => item.value > 0 || (caseConfig.price === 0 && item.value === 10));
-            // Для бесплатного кейса выигрыш всегда строго +10 звезд
-            if (caseConfig.price === 0) {
-                return caseConfig.items[0]; 
-            }
-
-            let totalWeight = caseConfig.items.reduce((sum, item) => sum + item.weight, 0);
-            let randomNum = Math.random() * totalWeight;
-            
-            for (let item of caseConfig.items) {
-                if (randomNum < item.weight) return item;
-                randomNum -= item.weight;
-            }
-            return caseConfig.items[0];
-        }
 
         let currentWin = null;
 
@@ -343,7 +307,7 @@
             let caseConfig = casesData[caseKey];
 
             if (balance < caseConfig.price) {
-                alert("Недостаточно звезд на балансе!");
+                alert("Недостаточно звезд!");
                 return;
             }
 
@@ -363,19 +327,15 @@
             track.style.transition = 'none';
             track.style.transform = 'translateX(0px)';
 
-            // Генерируем ленту рулетки (40 элементов)
             let itemsArray = [];
             for (let i = 0; i < 40; i++) {
-                // Случайный элемент из этого кейса для визуальной прокрутки
                 let randIndex = Math.floor(Math.random() * caseConfig.items.length);
                 itemsArray.push(caseConfig.items[randIndex]);
             }
 
-            // Определяем реальный выигрыш по весам шансов
             if (caseConfig.price === 0) {
-                currentWin = caseConfig.items[0]; // В бесплатном всегда +10
+                currentWin = caseConfig.items[0];
             } else {
-                // Считаем по весу для остальных кейсов
                 let totalWeight = caseConfig.items.reduce((sum, item) => sum + item.weight, 0);
                 let randomNum = Math.random() * totalWeight;
                 for (let item of caseConfig.items) {
@@ -388,24 +348,20 @@
                 if (!currentWin) currentWin = caseConfig.items[0];
             }
 
-            // Ставим победный предмет на 35-ю позицию
             itemsArray[35] = currentWin;
 
-            // Отрисовываем ленту
             let itemsHTML = '';
             for (let i = 0; i < itemsArray.length; i++) {
                 itemsHTML += `<div class="roulette-item">${itemsArray[i].icon}<span>${itemsArray[i].name}</span></div>`;
             }
             track.innerHTML = itemsHTML;
 
-            // Запуск анимации прокрутки
             setTimeout(() => {
                 let targetOffset = (35 * 90) - 130; 
                 track.style.transition = 'transform 4s cubic-bezier(0.08, 0.82, 0.15, 1)';
                 track.style.transform = `translateX(-${targetOffset}px)`;
             }, 50);
 
-            // Результат после остановки
             setTimeout(() => {
                 dropText.innerText = `Вы выиграли: ${currentWin.name}`;
                 if (currentWin.value > 0) {
