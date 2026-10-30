@@ -43,7 +43,6 @@
             display: flex;
             flex-direction: column;
             gap: 12px;
-            overflow-y: auto;
         }
         .title {
             text-align: center;
@@ -67,11 +66,6 @@
             align-items: center;
             gap: 15px;
         }
-        .case-img {
-            width: 55px;
-            height: 55px;
-            object-fit: contain;
-        }
         .case-name {
             font-weight: bold;
             font-size: 15px;
@@ -87,13 +81,112 @@
             border: none;
             cursor: pointer;
         }
+        .case-price:active {
+            transform: scale(0.95);
+        }
+
+        /* Модальное окно рулетки */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+        .modal-content {
+            background: #ffffff;
+            color: #333333;
+            padding: 20px;
+            border-radius: 20px;
+            text-align: center;
+            width: 90%;
+            max-width: 340px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+        }
+        .modal-content h3 {
+            margin-top: 0;
+            color: #5c3d99;
+        }
+
+        /* Окно рулетки */
+        .roulette-window {
+            position: relative;
+            width: 100%;
+            height: 100px;
+            background: #f0ebfa;
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 15px 0;
+            border: 2px solid #d1c4e9;
+        }
+        .roulette-pointer {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 100%;
+            background: #ff4757;
+            z-index: 10;
+        }
+        .roulette-track {
+            display: flex;
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            align-items: center;
+            transition: transform 4s cubic-bezier(0.15, 0.85, 0.35, 1);
+        }
+        .roulette-item {
+            min-width: 80px;
+            height: 80px;
+            background: #ffffff;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            font-size: 28px;
+        }
+        .roulette-item span {
+            font-size: 10px;
+            font-weight: bold;
+            margin-top: 4px;
+            color: #555;
+            padding: 0 2px;
+            text-align: center;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            width: 72px;
+        }
+
+        .close-btn {
+            background: #7b5cbe;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 5px;
+        }
     </style>
 </head>
 <body>
 
     <div class="header">
         <div class="menu-icon">☰ Меню</div>
-        <div class="wallet-info">👛 <span>10</span> ⭐</div>
+        <div class="wallet-info">👛 <span id="balance">50</span> ⭐</div>
     </div>
 
     <div class="container">
@@ -104,10 +197,10 @@
                 <div style="font-size: 32px;">🎁</div>
                 <div>
                     <div class="case-name">Galaxy Free</div>
-                    <div style="font-size: 12px; color: #777;">Стартовый кейс</div>
+                    <div style="font-size: 12px; color: #777;">Дает ровно 10 ⭐</div>
                 </div>
             </div>
-            <button class="case-price">БЕСПЛАТНО</button>
+            <button class="case-price" onclick="openCase('free')">БЕСПЛАТНО</button>
         </div>
 
         <div class="case-card">
@@ -115,10 +208,10 @@
                 <div style="font-size: 32px;">📦</div>
                 <div>
                     <div class="case-name">Бомж кейс</div>
-                    <div style="font-size: 12px; color: #777;">Простой лут</div>
+                    <div style="font-size: 12px; color: #777;">Цена: 10 ⭐</div>
                 </div>
             </div>
-            <button class="case-price">10 ⭐</button>
+            <button class="case-price" onclick="openCase('bomj')">10 ⭐</button>
         </div>
 
         <div class="case-card">
@@ -126,10 +219,10 @@
                 <div style="font-size: 32px;">🔥</div>
                 <div>
                     <div class="case-name">Огненный лудик</div>
-                    <div style="font-size: 12px; color: #777;">Горячие шансы</div>
+                    <div style="font-size: 12px; color: #777;">Цена: 25 ⭐</div>
                 </div>
             </div>
-            <button class="case-price">25 ⭐</button>
+            <button class="case-price" onclick="openCase('fire')">25 ⭐</button>
         </div>
 
         <div class="case-card">
@@ -137,10 +230,10 @@
                 <div style="font-size: 32px;">⏳</div>
                 <div>
                     <div class="case-name">А часики тикают</div>
-                    <div style="font-size: 12px; color: #777;">Время ценных призов</div>
+                    <div style="font-size: 12px; color: #777;">Цена: 30 ⭐</div>
                 </div>
             </div>
-            <button class="case-price">30 ⭐</button>
+            <button class="case-price" onclick="openCase('clock')">30 ⭐</button>
         </div>
 
         <div class="case-card">
@@ -148,17 +241,184 @@
                 <div style="font-size: 32px;">⚖️</div>
                 <div>
                     <div class="case-name">Кейс 50 на 50</div>
-                    <div style="font-size: 12px; color: #777;">Либо пан, либо пропал</div>
+                    <div style="font-size: 12px; color: #777;">Цена: 45 ⭐</div>
                 </div>
             </div>
-            <button class="case-price">45 ⭐</button>
+            <button class="case-price" onclick="openCase('fifty')">45 ⭐</button>
+        </div>
+    </div>
+
+    <!-- Модальное окно рулетки -->
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <h3 id="modal-title">Открытие кейса</h3>
+            <div class="roulette-window">
+                <div class="roulette-pointer"></div>
+                <div class="roulette-track" id="track"></div>
+            </div>
+            <div id="drop-text" style="font-weight: bold; margin-bottom: 15px; font-size: 14px;">Крутим рулетку...</div>
+            <button class="close-btn" id="close-btn" style="display:none;" onclick="closeModal()">Забрать</button>
         </div>
     </div>
 
     <script>
         let tg = window.Telegram.WebApp;
-        tg.expand(); // Разворачиваем на весь экран в Telegram
+        tg.expand();
+
+        let balance = 50;
+
+        // Наборы кейсов: для каждого кейса свои призы и шансы (weight)
+        const casesData = {
+            free: {
+                name: "Galaxy Free",
+                price: 0,
+                items: [
+                    { name: "+10 ⭐", icon: "⭐", value: 10, weight: 100 }, // 100% падает 10 звезд
+                    { name: "NFT Galaxy", icon: "🖼️", value: 0, weight: 25 }, // Картинка для красоты
+                    { name: "Telegram Gift", icon: "🎁", value: 0, weight: 25 },
+                    { name: "Rare NFT", icon: "💎", value: 0, weight: 10 }
+                ]
+            },
+            bomj: {
+                name: "Бомж кейс",
+                price: 10,
+                items: [
+                    { name: "Пусто", icon: "❌", value: 0, weight: 50 },
+                    { name: "+5 ⭐", icon: "⭐", value: 5, weight: 35 },
+                    { name: "+15 ⭐", icon: "💎", value: 15, weight: 12 },
+                    { name: "NFT Shard", icon: "🖼️", value: 0, weight: 3 }
+                ]
+            },
+            fire: {
+                name: "Огненный лудик",
+                price: 25,
+                items: [
+                    { name: "Пусто", icon: "❌", value: 0, weight: 45 },
+                    { name: "+10 ⭐", icon: "⭐", value: 10, weight: 35 },
+                    { name: "+40 ⭐", icon: "🔥", value: 40, weight: 17 },
+                    { name: "Fire NFT", icon: "🎨", value: 0, weight: 3 }
+                ]
+            },
+            clock: {
+                name: "А часики тикают",
+                price: 30,
+                items: [
+                    { name: "Пусто", icon: "❌", value: 0, weight: 40 },
+                    { name: "+15 ⭐", icon: "⭐", value: 15, weight: 40 },
+                    { name: "+55 ⭐", icon: "⏳", value: 55, weight: 17 },
+                    { name: "Time NFT", icon: "⌚", value: 0, weight: 3 }
+                ]
+            },
+            fifty: {
+                name: "Кейс 50 на 50",
+                price: 45,
+                items: [
+                    { name: "Пусто", icon: "❌", value: 0, weight: 50 },
+                    { name: "+95 ⭐", icon: "👑", value: 95, weight: 45 },
+                    { name: "Golden NFT", icon: "🏆", value: 0, weight: 5 }
+                ]
+            }
+        };
+
+        function getRandomItemFromCase(caseConfig) {
+            let winItems = caseConfig.items.filter(item => item.value > 0 || (caseConfig.price === 0 && item.value === 10));
+            // Для бесплатного кейса выигрыш всегда строго +10 звезд
+            if (caseConfig.price === 0) {
+                return caseConfig.items[0]; 
+            }
+
+            let totalWeight = caseConfig.items.reduce((sum, item) => sum + item.weight, 0);
+            let randomNum = Math.random() * totalWeight;
+            
+            for (let item of caseConfig.items) {
+                if (randomNum < item.weight) return item;
+                randomNum -= item.weight;
+            }
+            return caseConfig.items[0];
+        }
+
+        let currentWin = null;
+
+        function openCase(caseKey) {
+            let caseConfig = casesData[caseKey];
+
+            if (balance < caseConfig.price) {
+                alert("Недостаточно звезд на балансе!");
+                return;
+            }
+
+            balance -= caseConfig.price;
+            document.getElementById('balance').innerText = balance;
+
+            const modal = document.getElementById('modal');
+            const modalTitle = document.getElementById('modal-title');
+            const track = document.getElementById('track');
+            const dropText = document.getElementById('drop-text');
+            const closeBtn = document.getElementById('close-btn');
+
+            modal.style.display = 'flex';
+            modalTitle.innerText = caseConfig.name;
+            closeBtn.style.display = 'none';
+            dropText.innerText = 'Крутим рулетку...';
+            track.style.transition = 'none';
+            track.style.transform = 'translateX(0px)';
+
+            // Генерируем ленту рулетки (40 элементов)
+            let itemsArray = [];
+            for (let i = 0; i < 40; i++) {
+                // Случайный элемент из этого кейса для визуальной прокрутки
+                let randIndex = Math.floor(Math.random() * caseConfig.items.length);
+                itemsArray.push(caseConfig.items[randIndex]);
+            }
+
+            // Определяем реальный выигрыш по весам шансов
+            if (caseConfig.price === 0) {
+                currentWin = caseConfig.items[0]; // В бесплатном всегда +10
+            } else {
+                // Считаем по весу для остальных кейсов
+                let totalWeight = caseConfig.items.reduce((sum, item) => sum + item.weight, 0);
+                let randomNum = Math.random() * totalWeight;
+                for (let item of caseConfig.items) {
+                    if (randomNum < item.weight) {
+                        currentWin = item;
+                        break;
+                    }
+                    randomNum -= item.weight;
+                }
+                if (!currentWin) currentWin = caseConfig.items[0];
+            }
+
+            // Ставим победный предмет на 35-ю позицию
+            itemsArray[35] = currentWin;
+
+            // Отрисовываем ленту
+            let itemsHTML = '';
+            for (let i = 0; i < itemsArray.length; i++) {
+                itemsHTML += `<div class="roulette-item">${itemsArray[i].icon}<span>${itemsArray[i].name}</span></div>`;
+            }
+            track.innerHTML = itemsHTML;
+
+            // Запуск анимации прокрутки
+            setTimeout(() => {
+                let targetOffset = (35 * 90) - 130; 
+                track.style.transition = 'transform 4s cubic-bezier(0.08, 0.82, 0.15, 1)';
+                track.style.transform = `translateX(-${targetOffset}px)`;
+            }, 50);
+
+            // Результат после остановки
+            setTimeout(() => {
+                dropText.innerText = `Вы выиграли: ${currentWin.name}`;
+                if (currentWin.value > 0) {
+                    balance += currentWin.value;
+                    document.getElementById('balance').innerText = balance;
+                }
+                closeBtn.style.display = 'block';
+            }, 4100);
+        }
+
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
     </script>
 </body>
 </html>
-
