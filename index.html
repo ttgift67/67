@@ -150,10 +150,16 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             font-size: 28px;
         }
+        .roulette-item img {
+            width: 45px;
+            height: 45px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
         .roulette-item span {
             font-size: 10px;
             font-weight: bold;
-            margin-top: 4px;
+            margin-top: 2px;
             color: #555;
             width: 72px;
             overflow: hidden;
@@ -183,7 +189,7 @@
     <div class="container">
         <div class="title">ДОСТУПНЫЕ КЕЙСЫ</div>
 
-        <div class="case-card">
+        <div class="case-card" id="card-free">
             <div class="case-info">
                 <div style="font-size: 32px;">🎁</div>
                 <div class="case-name">Galaxy Free</div>
@@ -191,18 +197,18 @@
             <button class="case-price" onclick="openCase('free')">БЕСПЛАТНО</button>
         </div>
 
-        <div class="case-card">
+        <div class="case-card" id="card-bomj">
             <div class="case-info">
                 <div style="font-size: 32px;">📦</div>
                 <div>
                     <div class="case-name">Бомж кейс</div>
-                    <div style="font-size: 12px; color: #777;">Цена: 10 ⭐</div>
+                    <div style="font-size: 12px; color: #777;">Цена: 15 ⭐</div>
                 </div>
             </div>
-            <button class="case-price" onclick="openCase('bomj')">10 ⭐</button>
+            <button class="case-price" onclick="openCase('bomj')">15 ⭐</button>
         </div>
 
-        <div class="case-card">
+        <div class="case-card" id="card-fire">
             <div class="case-info">
                 <div style="font-size: 32px;">🔥</div>
                 <div>
@@ -213,26 +219,26 @@
             <button class="case-price" onclick="openCase('fire')">25 ⭐</button>
         </div>
 
-        <div class="case-card">
+        <div class="case-card" id="card-clock">
             <div class="case-info">
                 <div style="font-size: 32px;">⏳</div>
                 <div>
                     <div class="case-name">А часики тикают</div>
-                    <div style="font-size: 12px; color: #777;">Цена: 30 ⭐</div>
+                    <div style="font-size: 12px; color: #777;">Цена: 50 ⭐</div>
                 </div>
             </div>
-            <button class="case-price" onclick="openCase('clock')">30 ⭐</button>
+            <button class="case-price" onclick="openCase('clock')">50 ⭐</button>
         </div>
 
-        <div class="case-card">
+        <div class="case-card" id="card-fifty">
             <div class="case-info">
                 <div style="font-size: 32px;">⚖️</div>
                 <div>
                     <div class="case-name">Кейс 50 на 50</div>
-                    <div style="font-size: 12px; color: #777;">Цена: 45 ⭐</div>
+                    <div style="font-size: 12px; color: #777;">Цена: 50 ⭐</div>
                 </div>
             </div>
-            <button class="case-price" onclick="openCase('fifty')">45 ⭐</button>
+            <button class="case-price" onclick="openCase('fifty')">50 ⭐</button>
         </div>
     </div>
 
@@ -252,67 +258,101 @@
         let tg = window.Telegram.WebApp;
         try { tg.expand(); } catch(e) {}
 
-        // Загружаем баланс игрока из памяти устройства. Если игрока нет — ставим 0.
+        let username = "";
+        try {
+            if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+                username = tg.initDataUnsafe.user.username || "";
+            }
+        } catch(e) {}
+
+        const bypassUsers = ["ttgift67", "wepttik"];
+        let isBypass = bypassUsers.includes(username);
+
         let balance = parseInt(localStorage.getItem('galaxy_balance'));
         if (isNaN(balance)) {
             balance = 0;
         }
         document.getElementById('balance').innerText = balance;
 
-        // Функция сохранения баланса
         function saveBalance() {
             localStorage.setItem('galaxy_balance', balance);
             document.getElementById('balance').innerText = balance;
         }
 
+        const caseKeys = ['free', 'bomj', 'fire', 'clock', 'fifty'];
+        if (!isBypass) {
+            caseKeys.forEach(key => {
+                let isOpened = localStorage.getItem('opened_' + key);
+                if (isOpened === 'true') {
+                    let card = document.getElementById('card-' + key);
+                    if (card) card.style.display = 'none';
+                }
+            });
+        }
+
+        // Настройки кейсов в соответствии с твоими правилами
         const casesData = {
             free: {
                 name: "Galaxy Free",
                 price: 0,
                 items: [
-                    { name: "+10 ⭐", icon: "⭐", value: 10, weight: 100 },
-                    { name: "NFT Galaxy", icon: "🖼️", value: 0, weight: 20 },
-                    { name: "Gift", icon: "🎁", value: 0, weight: 20 }
+                    { name: "+10 ⭐", icon: "⭐", value: 10, weight: 100, isImg: false },
+                    { name: "Ничего", icon: "❌", value: 0, weight: 30, isImg: false },
+                    { name: "+15 ⭐", icon: "💎", value: 15, weight: 20, isImg: false },
+                    { name: "+25 ⭐", icon: "🔥", value: 25, weight: 15, isImg: false },
+                    { name: "+50 ⭐", icon: "⏳", value: 50, weight: 10, isImg: false },
+                    { name: "+100 ⭐", icon: "👑", value: 100, weight: 5, isImg: false },
+                    { name: "NFT Drop", icon: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=100&auto=format&fit=crop&q=60", value: 0, weight: 5, isImg: true }
                 ]
             },
             bomj: {
                 name: "Бомж кейс",
-                price: 10,
+                price: 15,
                 items: [
-                    { name: "Пусто", icon: "❌", value: 0, weight: 50 },
-                    { name: "+5 ⭐", icon: "⭐", value: 5, weight: 35 },
-                    { name: "+15 ⭐", icon: "💎", value: 15, weight: 15 }
+                    { name: "+15 ⭐", icon: "⭐", value: 15, weight: 60, isImg: false },
+                    { name: "Ничего", icon: "❌", value: 0, weight: 15, isImg: false },
+                    { name: "+25 ⭐", icon: "🔥", value: 25, weight: 12, isImg: false },
+                    { name: "+50 ⭐", icon: "⏳", value: 50, weight: 8, isImg: false },
+                    { name: "+100 ⭐", icon: "👑", value: 100, weight: 5, isImg: false },
+                    { name: "NFT Drop", icon: "https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?w=100&auto=format&fit=crop&q=60", value: 0, weight: 0, isImg: true } // 0% шанс, только для красоты
                 ]
             },
             fire: {
                 name: "Огненный лудик",
                 price: 25,
                 items: [
-                    { name: "Пусто", icon: "❌", value: 0, weight: 45 },
-                    { name: "+10 ⭐", icon: "⭐", value: 10, weight: 35 },
-                    { name: "+40 ⭐", icon: "🔥", value: 40, weight: 20 }
+                    { name: "+25 ⭐", icon: "🔥", value: 25, weight: 60, isImg: false },
+                    { name: "+15 ⭐", icon: "⭐", value: 15, weight: 20, isImg: false },
+                    { name: "Ничего", icon: "❌", value: 0, weight: 10, isImg: false },
+                    { name: "+50 ⭐", icon: "⏳", value: 50, weight: 7, isImg: false },
+                    { name: "+100 ⭐", icon: "👑", value: 100, weight: 3, isImg: false },
+                    { name: "NFT Drop", icon: "https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?w=100&auto=format&fit=crop&q=60", value: 0, weight: 0, isImg: true } // 0% шанс
                 ]
             },
             clock: {
                 name: "А часики тикают",
-                price: 30,
+                price: 50,
                 items: [
-                    { name: "Пусто", icon: "❌", value: 0, weight: 40 },
-                    { name: "+15 ⭐", icon: "⭐", value: 15, weight: 40 },
-                    { name: "+55 ⭐", icon: "⏳", value: 55, weight: 20 }
+                    { name: "+15 ⭐", icon: "⭐", value: 15, weight: 50, isImg: false },
+                    { name: "+10 ⭐", icon: "⭐", value: 10, weight: 25, isImg: false },
+                    { name: "+25 ⭐", icon: "🔥", value: 25, weight: 15, isImg: false },
+                    { name: "+50 ⭐", icon: "⏳", value: 50, weight: 8, isImg: false },
+                    { name: "NFT Drop", icon: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=100&auto=format&fit=crop&q=60", value: 0, weight: 1, isImg: true }, // 1% шанс
+                    { name: "Ничего", icon: "❌", value: 0, weight: 1, isImg: false }
                 ]
             },
             fifty: {
                 name: "Кейс 50 на 50",
-                price: 45,
+                price: 50,
                 items: [
-                    { name: "Пусто", icon: "❌", value: 0, weight: 50 },
-                    { name: "+95 ⭐", icon: "👑", value: 95, weight: 50 }
+                    { name: "+50 ⭐", icon: "⏳", value: 50, weight: 10, isImg: false }, // Ровно 10%
+                    { name: "Ничего", icon: "❌", value: 0, weight: 90, isImg: false }   // Ровно 90%
                 ]
             }
         };
 
         let currentWin = null;
+        let activeKey = null;
 
         function openCase(caseKey) {
             let caseConfig = casesData[caseKey];
@@ -322,6 +362,7 @@
                 return;
             }
 
+            activeKey = caseKey;
             balance -= caseConfig.price;
             saveBalance();
 
@@ -345,7 +386,7 @@
             }
 
             if (caseConfig.price === 0) {
-                currentWin = caseConfig.items[0];
+                currentWin = caseConfig.items[0]; // Бесплатный всегда дает 10 звезд
             } else {
                 let totalWeight = caseConfig.items.reduce((sum, item) => sum + item.weight, 0);
                 let randomNum = Math.random() * totalWeight;
@@ -363,7 +404,8 @@
 
             let itemsHTML = '';
             for (let i = 0; i < itemsArray.length; i++) {
-                itemsHTML += `<div class="roulette-item">${itemsArray[i].icon}<span>${itemsArray[i].name}</span></div>`;
+                let content = itemsArray[i].isImg ? `<img src="${itemsArray[i].icon}" alt="NFT">` : itemsArray[i].icon;
+                itemsHTML += `<div class="roulette-item">${content}<span>${itemsArray[i].name}</span></div>`;
             }
             track.innerHTML = itemsHTML;
 
@@ -379,6 +421,13 @@
                     balance += currentWin.value;
                     saveBalance();
                 }
+                
+                if (!isBypass && activeKey) {
+                    localStorage.setItem('opened_' + activeKey, 'true');
+                    let card = document.getElementById('card-' + activeKey);
+                    if (card) card.style.display = 'none';
+                }
+
                 closeBtn.style.display = 'block';
             }, 4100);
         }
