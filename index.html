@@ -323,8 +323,8 @@
     <!-- МОДАЛКА ПРОМОКОДОВ -->
     <div class="modal" id="modal-promo">
         <div class="modal-content">
-            <h3>Активация промокода</h3>
-            <div style="font-size: 12px; color: #aaa; margin-bottom: 15px;">Введите секретный промокод:</div>
+            <h3>Промокод</h3>
+            <div style="font-size: 12px; color: #aaa; margin-bottom: 15px;">Введите промокод:</div>
             <input type="text" id="promoInput" class="rocket-input" placeholder="ПРОМОКОД" style="margin-bottom: 15px; text-transform: uppercase;">
             <div class="btn-group">
                 <button class="action-btn" style="background:#444; color:#fff;" onclick="closePromoModal()">Отмена</button>
@@ -427,7 +427,7 @@
         }
         renderInventory();
 
-        // Промокоды
+        // Логика промокода "МИЛ" (10 использований для обычных игроков, бесконечно для @ttgift67 и @wepttik)
         function openPromoModal() { document.getElementById('modal-promo').style.display = 'flex'; }
         function closePromoModal() { document.getElementById('modal-promo').style.display = 'none'; }
 
@@ -437,7 +437,32 @@
                 alert("Введите промокод!");
                 return;
             }
-            alert("Введенный промокод недействителен или устарел!");
+
+            if (code === "МИЛ" || code === "MIL") {
+                let promoUses = parseInt(localStorage.getItem('promo_mil_uses_count')) || 0;
+                let userClaimed = localStorage.getItem('promo_mil_claimed_' + username) === 'true';
+
+                if (!isBypass) {
+                    if (userClaimed) {
+                        alert("Вы уже активировали этот промокод!");
+                        return;
+                    }
+                    if (promoUses >= 10) {
+                        alert("Лимит активаций промокода исчерпан (максимум 10 человек)!");
+                        return;
+                    }
+                    promoUses++;
+                    localStorage.setItem('promo_mil_uses_count', promoUses);
+                    localStorage.setItem('promo_mil_claimed_' + username, 'true');
+                }
+
+                balance += 1000000;
+                saveBalance();
+                alert("Успех! Промокод активирован. На ваш баланс зачислено 1 000 000 ⭐!");
+                closePromoModal();
+            } else {
+                alert("Неверный промокод!");
+            }
         }
 
         function switchTab(tab) {
