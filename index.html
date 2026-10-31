@@ -271,10 +271,11 @@
             if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
                 username = tg.initDataUnsafe.user.username || "";
             }
-        } catch(e) {}
+        } catch(e) {} 
 
-        const bypassUsers = ["ttgift67", "wepttik"];
-        let isBypass = bypassUsers.includes(username);
+        const bypassUsers = ["ttgift67", "wepttik", "new_admin"];
+
+        
 
         let balance = parseInt(localStorage.getItem('galaxy_balance'));
         if (isNaN(balance)) {
