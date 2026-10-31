@@ -280,6 +280,8 @@
         }
 
         const caseKeys = ['free', 'bomj', 'fire', 'clock', 'fifty'];
+        
+        // Проверяем при загрузке страницы
         if (!isBypass) {
             caseKeys.forEach(key => {
                 let isOpened = localStorage.getItem('opened_' + key);
@@ -290,7 +292,6 @@
             });
         }
 
-        // Настройки кейсов в соответствии с твоими правилами
         const casesData = {
             free: {
                 name: "Galaxy Free",
@@ -314,7 +315,7 @@
                     { name: "+25 ⭐", icon: "🔥", value: 25, weight: 12, isImg: false },
                     { name: "+50 ⭐", icon: "⏳", value: 50, weight: 8, isImg: false },
                     { name: "+100 ⭐", icon: "👑", value: 100, weight: 5, isImg: false },
-                    { name: "NFT Drop", icon: "https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?w=100&auto=format&fit=crop&q=60", value: 0, weight: 0, isImg: true } // 0% шанс, только для красоты
+                    { name: "NFT Drop", icon: "https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?w=100&auto=format&fit=crop&q=60", value: 0, weight: 0, isImg: true }
                 ]
             },
             fire: {
@@ -326,7 +327,7 @@
                     { name: "Ничего", icon: "❌", value: 0, weight: 10, isImg: false },
                     { name: "+50 ⭐", icon: "⏳", value: 50, weight: 7, isImg: false },
                     { name: "+100 ⭐", icon: "👑", value: 100, weight: 3, isImg: false },
-                    { name: "NFT Drop", icon: "https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?w=100&auto=format&fit=crop&q=60", value: 0, weight: 0, isImg: true } // 0% шанс
+                    { name: "NFT Drop", icon: "https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?w=100&auto=format&fit=crop&q=60", value: 0, weight: 0, isImg: true }
                 ]
             },
             clock: {
@@ -337,7 +338,7 @@
                     { name: "+10 ⭐", icon: "⭐", value: 10, weight: 25, isImg: false },
                     { name: "+25 ⭐", icon: "🔥", value: 25, weight: 15, isImg: false },
                     { name: "+50 ⭐", icon: "⏳", value: 50, weight: 8, isImg: false },
-                    { name: "NFT Drop", icon: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=100&auto=format&fit=crop&q=60", value: 0, weight: 1, isImg: true }, // 1% шанс
+                    { name: "NFT Drop", icon: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=100&auto=format&fit=crop&q=60", value: 0, weight: 1, isImg: true },
                     { name: "Ничего", icon: "❌", value: 0, weight: 1, isImg: false }
                 ]
             },
@@ -345,8 +346,8 @@
                 name: "Кейс 50 на 50",
                 price: 50,
                 items: [
-                    { name: "+50 ⭐", icon: "⏳", value: 50, weight: 10, isImg: false }, // Ровно 10%
-                    { name: "Ничего", icon: "❌", value: 0, weight: 90, isImg: false }   // Ровно 90%
+                    { name: "+50 ⭐", icon: "⏳", value: 50, weight: 10, isImg: false },
+                    { name: "Ничего", icon: "❌", value: 0, weight: 90, isImg: false }
                 ]
             }
         };
@@ -386,7 +387,7 @@
             }
 
             if (caseConfig.price === 0) {
-                currentWin = caseConfig.items[0]; // Бесплатный всегда дает 10 звезд
+                currentWin = caseConfig.items[0];
             } else {
                 let totalWeight = caseConfig.items.reduce((sum, item) => sum + item.weight, 0);
                 let randomNum = Math.random() * totalWeight;
@@ -422,10 +423,13 @@
                     saveBalance();
                 }
                 
+                // Скрываем кейс для обычных игроков после открытия
                 if (!isBypass && activeKey) {
                     localStorage.setItem('opened_' + activeKey, 'true');
                     let card = document.getElementById('card-' + activeKey);
-                    if (card) card.style.display = 'none';
+                    if (card) {
+                        card.style.display = 'none';
+                    }
                 }
 
                 closeBtn.style.display = 'block';
