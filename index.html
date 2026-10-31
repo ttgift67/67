@@ -281,7 +281,6 @@
 
         const caseKeys = ['free', 'bomj', 'fire', 'clock', 'fifty'];
         
-        // Проверяем при загрузке страницы
         if (!isBypass) {
             caseKeys.forEach(key => {
                 let isOpened = localStorage.getItem('opened_' + key);
@@ -297,57 +296,57 @@
                 name: "Galaxy Free",
                 price: 0,
                 items: [
-                    { name: "+10 ⭐", icon: "⭐", value: 10, weight: 100, isImg: false },
-                    { name: "Ничего", icon: "❌", value: 0, weight: 30, isImg: false },
-                    { name: "+15 ⭐", icon: "💎", value: 15, weight: 20, isImg: false },
-                    { name: "+25 ⭐", icon: "🔥", value: 25, weight: 15, isImg: false },
-                    { name: "+50 ⭐", icon: "⏳", value: 50, weight: 10, isImg: false },
-                    { name: "+100 ⭐", icon: "👑", value: 100, weight: 5, isImg: false },
-                    { name: "NFT Drop", icon: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=100&auto=format&fit=crop&q=60", value: 0, weight: 5, isImg: true }
+                    { name: "+10 ⭐", icon: "⭐", value: 10, weight: 100 },
+                    { name: "Ничего", icon: "❌", value: 0, weight: 30 },
+                    { name: "Сердце (15⭐)", icon: "💖", value: 15, weight: 20 },
+                    { name: "Подарок (25⭐)", icon: "🎁", value: 25, weight: 15 },
+                    { name: "Букет (50⭐)", icon: "💐", value: 50, weight: 10 },
+                    { name: "Кубок (100⭐)", icon: "🏆", value: 100, weight: 5 },
+                    { name: "NFT Брил.", icon: "💎", value: 0, weight: 5 }
                 ]
             },
             bomj: {
                 name: "Бомж кейс",
                 price: 15,
                 items: [
-                    { name: "+15 ⭐", icon: "⭐", value: 15, weight: 60, isImg: false },
-                    { name: "Ничего", icon: "❌", value: 0, weight: 15, isImg: false },
-                    { name: "+25 ⭐", icon: "🔥", value: 25, weight: 12, isImg: false },
-                    { name: "+50 ⭐", icon: "⏳", value: 50, weight: 8, isImg: false },
-                    { name: "+100 ⭐", icon: "👑", value: 100, weight: 5, isImg: false },
-                    { name: "NFT Drop", icon: "https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?w=100&auto=format&fit=crop&q=60", value: 0, weight: 0, isImg: true }
+                    { name: "+15 ⭐", icon: "⭐", value: 15, weight: 60 },
+                    { name: "Ничего", icon: "❌", value: 0, weight: 15 },
+                    { name: "Роза (25⭐)", icon: "🌹", value: 25, weight: 12 },
+                    { name: "Торт (50⭐)", icon: "🎂", value: 50, weight: 8 },
+                    { name: "Колечко (100⭐)", icon: "💍", value: 100, weight: 5 },
+                    { name: "NFT Ракета", icon: "🚀", value: 0, weight: 0 }
                 ]
             },
             fire: {
                 name: "Огненный лудик",
                 price: 25,
                 items: [
-                    { name: "+25 ⭐", icon: "🔥", value: 25, weight: 60, isImg: false },
-                    { name: "+15 ⭐", icon: "⭐", value: 15, weight: 20, isImg: false },
-                    { name: "Ничего", icon: "❌", value: 0, weight: 10, isImg: false },
-                    { name: "+50 ⭐", icon: "⏳", value: 50, weight: 7, isImg: false },
-                    { name: "+100 ⭐", icon: "👑", value: 100, weight: 3, isImg: false },
-                    { name: "NFT Drop", icon: "https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?w=100&auto=format&fit=crop&q=60", value: 0, weight: 0, isImg: true }
+                    { name: "Подарок (25⭐)", icon: "🎁", value: 25, weight: 60 },
+                    { name: "Сердце (15⭐)", icon: "💖", value: 15, weight: 20 },
+                    { name: "Ничего", icon: "❌", value: 0, weight: 10 },
+                    { name: "Шампанское (50⭐)", icon: "🍾", value: 50, weight: 7 },
+                    { name: "Кубок (100⭐)", icon: "🏆", value: 100, weight: 3 },
+                    { name: "NFT Брил.", icon: "💎", value: 0, weight: 0 }
                 ]
             },
             clock: {
                 name: "А часики тикают",
                 price: 50,
                 items: [
-                    { name: "+15 ⭐", icon: "⭐", value: 15, weight: 50, isImg: false },
-                    { name: "+10 ⭐", icon: "⭐", value: 10, weight: 25, isImg: false },
-                    { name: "+25 ⭐", icon: "🔥", value: 25, weight: 15, isImg: false },
-                    { name: "+50 ⭐", icon: "⏳", value: 50, weight: 8, isImg: false },
-                    { name: "NFT Drop", icon: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=100&auto=format&fit=crop&q=60", value: 0, weight: 1, isImg: true },
-                    { name: "Ничего", icon: "❌", value: 0, weight: 1, isImg: false }
+                    { name: "Сердце (15⭐)", icon: "💖", value: 15, weight: 50 },
+                    { name: "+10 ⭐", icon: "⭐", value: 10, weight: 25 },
+                    { name: "Подарок (25⭐)", icon: "🎁", value: 25, weight: 15 },
+                    { name: "Торт (50⭐)", icon: "🎂", value: 50, weight: 8 },
+                    { name: "NFT Колечко", icon: "💍", value: 0, weight: 1 },
+                    { name: "Ничего", icon: "❌", value: 0, weight: 1 }
                 ]
             },
             fifty: {
                 name: "Кейс 50 на 50",
                 price: 50,
                 items: [
-                    { name: "+50 ⭐", icon: "⏳", value: 50, weight: 10, isImg: false },
-                    { name: "Ничего", icon: "❌", value: 0, weight: 90, isImg: false }
+                    { name: "Букет (50⭐)", icon: "💐", value: 50, weight: 10 },
+                    { name: "Ничего", icon: "❌", value: 0, weight: 90 }
                 ]
             }
         };
@@ -405,8 +404,7 @@
 
             let itemsHTML = '';
             for (let i = 0; i < itemsArray.length; i++) {
-                let content = itemsArray[i].isImg ? `<img src="${itemsArray[i].icon}" alt="NFT">` : itemsArray[i].icon;
-                itemsHTML += `<div class="roulette-item">${content}<span>${itemsArray[i].name}</span></div>`;
+                itemsHTML += `<div class="roulette-item">${itemsArray[i].icon}<span>${itemsArray[i].name}</span></div>`;
             }
             track.innerHTML = itemsHTML;
 
@@ -423,13 +421,10 @@
                     saveBalance();
                 }
                 
-                // Скрываем кейс для обычных игроков после открытия
                 if (!isBypass && activeKey) {
                     localStorage.setItem('opened_' + activeKey, 'true');
                     let card = document.getElementById('card-' + activeKey);
-                    if (card) {
-                        card.style.display = 'none';
-                    }
+                    if (card) card.style.display = 'none';
                 }
 
                 closeBtn.style.display = 'block';
@@ -442,3 +437,4 @@
     </script>
 </body>
 </html>
+
