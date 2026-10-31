@@ -150,12 +150,6 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             font-size: 28px;
         }
-        .roulette-item img {
-            width: 45px;
-            height: 45px;
-            object-fit: cover;
-            border-radius: 8px;
-        }
         .roulette-item span {
             font-size: 10px;
             font-weight: bold;
@@ -271,11 +265,11 @@
             if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
                 username = tg.initDataUnsafe.user.username || "";
             }
-        } catch(e) {} 
+        } catch(e) {}
 
-        const bypassUsers = ["ttgift67", "wepttik", "new_admin"];
-
-        
+        // Список администраторов (бесконечные кейсы)
+        const bypassUsers = ["ttgift67", "wepttik"];
+        let isBypass = bypassUsers.includes(username);
 
         let balance = parseInt(localStorage.getItem('galaxy_balance'));
         if (isNaN(balance)) {
@@ -475,4 +469,3 @@
     </script>
 </body>
 </html>
-
