@@ -166,16 +166,24 @@
             text-overflow: ellipsis;
             white-space: nowrap;
         }
-        .close-btn {
+        .btn-group {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .action-btn {
             background: #7b5cbe;
             color: white;
             border: none;
-            padding: 10px 20px;
+            padding: 10px;
             border-radius: 12px;
             font-weight: bold;
             cursor: pointer;
-            width: 100%;
-            margin-top: 5px;
+            flex: 1;
+            font-size: 13px;
+        }
+        .action-btn:active {
+            transform: scale(0.95);
         }
     </style>
 </head>
@@ -250,7 +258,7 @@
                 <div class="roulette-track" id="track"></div>
             </div>
             <div id="drop-text" style="font-weight: bold; margin-bottom: 15px; font-size: 14px;">Крутим рулетку...</div>
-            <button class="close-btn" id="close-btn" style="display:none;" onclick="closeModal()">Забрать</button>
+            <div id="buttons-container" style="display:none;"></div>
         </div>
     </div>
 
@@ -296,57 +304,57 @@
                 name: "Galaxy Free",
                 price: 0,
                 items: [
-                    { name: "+10 ⭐", icon: "⭐", value: 10, weight: 100 },
-                    { name: "Ничего", icon: "❌", value: 0, weight: 30 },
-                    { name: "Сердце (15⭐)", icon: "💖", value: 15, weight: 20 },
-                    { name: "Подарок (25⭐)", icon: "🎁", value: 25, weight: 15 },
-                    { name: "Букет (50⭐)", icon: "💐", value: 50, weight: 10 },
-                    { name: "Кубок (100⭐)", icon: "🏆", value: 100, weight: 5 },
-                    { name: "NFT Брил.", icon: "💎", value: 0, weight: 5 }
+                    { name: "+10 ⭐", icon: "⭐", value: 10, weight: 100, isGift: false },
+                    { name: "Ничего", icon: "❌", value: 0, weight: 30, isGift: false },
+                    { name: "Сердце", icon: "💖", value: 15, weight: 20, isGift: true },
+                    { name: "Подарок", icon: "🎁", value: 25, weight: 15, isGift: true },
+                    { name: "Букет", icon: "💐", value: 50, weight: 10, isGift: true },
+                    { name: "Кубок", icon: "🏆", value: 100, weight: 5, isGift: true },
+                    { name: "NFT Брил.", icon: "💎", value: 0, weight: 5, isGift: true }
                 ]
             },
             bomj: {
                 name: "Бомж кейс",
                 price: 15,
                 items: [
-                    { name: "+15 ⭐", icon: "⭐", value: 15, weight: 60 },
-                    { name: "Ничего", icon: "❌", value: 0, weight: 15 },
-                    { name: "Роза (25⭐)", icon: "🌹", value: 25, weight: 12 },
-                    { name: "Торт (50⭐)", icon: "🎂", value: 50, weight: 8 },
-                    { name: "Колечко (100⭐)", icon: "💍", value: 100, weight: 5 },
-                    { name: "NFT Ракета", icon: "🚀", value: 0, weight: 0 }
+                    { name: "+15 ⭐", icon: "⭐", value: 15, weight: 60, isGift: false },
+                    { name: "Ничего", icon: "❌", value: 0, weight: 15, isGift: false },
+                    { name: "Роза", icon: "🌹", value: 25, weight: 12, isGift: true },
+                    { name: "Торт", icon: "🎂", value: 50, weight: 8, isGift: true },
+                    { name: "Колечко", icon: "💍", value: 100, weight: 5, isGift: true },
+                    { name: "NFT Ракета", icon: "🚀", value: 0, weight: 0, isGift: true }
                 ]
             },
             fire: {
                 name: "Огненный лудик",
                 price: 25,
                 items: [
-                    { name: "Подарок (25⭐)", icon: "🎁", value: 25, weight: 60 },
-                    { name: "Сердце (15⭐)", icon: "💖", value: 15, weight: 20 },
-                    { name: "Ничего", icon: "❌", value: 0, weight: 10 },
-                    { name: "Шампанское (50⭐)", icon: "🍾", value: 50, weight: 7 },
-                    { name: "Кубок (100⭐)", icon: "🏆", value: 100, weight: 3 },
-                    { name: "NFT Брил.", icon: "💎", value: 0, weight: 0 }
+                    { name: "Подарок", icon: "🎁", value: 25, weight: 60, isGift: true },
+                    { name: "Сердце", icon: "💖", value: 15, weight: 20, isGift: true },
+                    { name: "Ничего", icon: "❌", value: 0, weight: 10, isGift: false },
+                    { name: "Шампанское", icon: "🍾", value: 50, weight: 7, isGift: true },
+                    { name: "Кубок", icon: "🏆", value: 100, weight: 3, isGift: true },
+                    { name: "NFT Брил.", icon: "💎", value: 0, weight: 0, isGift: true }
                 ]
             },
             clock: {
                 name: "А часики тикают",
                 price: 50,
                 items: [
-                    { name: "Сердце (15⭐)", icon: "💖", value: 15, weight: 50 },
-                    { name: "+10 ⭐", icon: "⭐", value: 10, weight: 25 },
-                    { name: "Подарок (25⭐)", icon: "🎁", value: 25, weight: 15 },
-                    { name: "Торт (50⭐)", icon: "🎂", value: 50, weight: 8 },
-                    { name: "NFT Колечко", icon: "💍", value: 0, weight: 1 },
-                    { name: "Ничего", icon: "❌", value: 0, weight: 1 }
+                    { name: "Сердце", icon: "💖", value: 15, weight: 50, isGift: true },
+                    { name: "+10 ⭐", icon: "⭐", value: 10, weight: 25, isGift: false },
+                    { name: "Подарок", icon: "🎁", value: 25, weight: 15, isGift: true },
+                    { name: "Торт", icon: "🎂", value: 50, weight: 8, isGift: true },
+                    { name: "NFT Колечко", icon: "💍", value: 0, weight: 1, isGift: true },
+                    { name: "Ничего", icon: "❌", value: 0, weight: 1, isGift: false }
                 ]
             },
             fifty: {
                 name: "Кейс 50 на 50",
                 price: 50,
                 items: [
-                    { name: "Букет (50⭐)", icon: "💐", value: 50, weight: 10 },
-                    { name: "Ничего", icon: "❌", value: 0, weight: 90 }
+                    { name: "Букет", icon: "💐", value: 50, weight: 10, isGift: true },
+                    { name: "Ничего", icon: "❌", value: 0, weight: 90, isGift: false }
                 ]
             }
         };
@@ -370,11 +378,11 @@
             const modalTitle = document.getElementById('modal-title');
             const track = document.getElementById('track');
             const dropText = document.getElementById('drop-text');
-            const closeBtn = document.getElementById('close-btn');
+            const btnContainer = document.getElementById('buttons-container');
 
             modal.style.display = 'flex';
             modalTitle.innerText = caseConfig.name;
-            closeBtn.style.display = 'none';
+            btnContainer.style.display = 'none';
             dropText.innerText = 'Крутим рулетку...';
             track.style.transition = 'none';
             track.style.transform = 'translateX(0px)';
@@ -415,20 +423,49 @@
             }, 50);
 
             setTimeout(() => {
-                dropText.innerText = `Вы выиграли: ${currentWin.name}`;
-                if (currentWin.value > 0) {
-                    balance += currentWin.value;
-                    saveBalance();
+                if (currentWin.isGift) {
+                    dropText.innerText = `Ты выиграл подарок: ${currentWin.name}!`;
+                    btnContainer.innerHTML = `
+                        <div class="btn-group">
+                            <button class="action-btn" onclick="handleGiftAction('withdraw')">Вывести</button>
+                            <button class="action-btn" onclick="handleGiftAction('exchange')">Обменять</button>
+                        </div>
+                    `;
+                } else {
+                    if (currentWin.value > 0) {
+                        balance += currentWin.value;
+                        saveBalance();
+                        dropText.innerText = `Ты выиграл ${currentWin.value} ⭐ на баланс!`;
+                    } else {
+                        dropText.innerText = `К сожалению, ничего не выиграл ❌`;
+                    }
+                    btnContainer.innerHTML = `<button class="action-btn" style="width:100%; margin-top:10px;" onclick="closeModal()">Забрать</button>`;
                 }
-                
+
+                btnContainer.style.display = 'block';
+
                 if (!isBypass && activeKey) {
                     localStorage.setItem('opened_' + activeKey, 'true');
                     let card = document.getElementById('card-' + activeKey);
                     if (card) card.style.display = 'none';
                 }
 
-                closeBtn.style.display = 'block';
             }, 4100);
+        }
+
+        function handleGiftAction(action) {
+            if (action === 'withdraw') {
+                alert("Запрос на вывод подарка отправлен!");
+            } else {
+                if (currentWin.value > 0) {
+                    balance += currentWin.value;
+                    saveBalance();
+                    alert(`Подарок успешно обменен на ${currentWin.value} ⭐!`);
+                } else {
+                    alert("Этот предмет нельзя обменять.");
+                }
+            }
+            closeModal();
         }
 
         function closeModal() {
