@@ -75,6 +75,31 @@
         .title {
             text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 5px; color: #f1c40f;
         }
+
+        .case-categories {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 5px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+        .cat-tab {
+            background: #1e1e24;
+            border: 1px solid #333;
+            color: #aaa;
+            padding: 8px 16px;
+            border-radius: 14px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .cat-tab.active {
+            background: #f1c40f;
+            color: #121212;
+            border-color: #f1c40f;
+        }
+
         .case-card {
             background: #1e1e24; color: #ffffff; border-radius: 16px; padding: 12px 15px;
             display: flex; align-items: center; justify-content: space-between;
@@ -87,8 +112,10 @@
             font-size: 13px; font-weight: bold; border: none; cursor: pointer;
         }
         .case-price:active { transform: scale(0.95); }
+        .case-price:disabled { background: #555; color: #888; cursor: not-allowed; }
+        .owner-subtext { font-size: 11px; color: #f1c40f; text-align: center; margin-top: -6px; margin-bottom: 5px; }
 
-        /* Слоты */
+        /* Слоты и Ракета */
         .slot-machine {
             background: #1e1e24; border-radius: 20px; padding: 12px; width: 100%;
             box-sizing: border-box; border: 2px solid #333; display: flex; flex-direction: column; gap: 10px;
@@ -104,8 +131,6 @@
             padding: 14px; border-radius: 14px; font-size: 15px; font-weight: bold; cursor: pointer;
             width: 100%; text-align: center; box-shadow: 0 4px 15px rgba(241, 196, 15, 0.3);
         }
-        .spin-btn:active { transform: scale(0.97); }
-
         .control-section {
             width: 100%; background: #1e1e24; padding: 12px 15px; border-radius: 16px;
             box-sizing: border-box; border: 1px solid #333;
@@ -118,7 +143,6 @@
         }
         .line-btn.active { background: #f1c40f; color: #121212; border-color: #f1c40f; }
 
-        /* Ракета */
         .rocket-box {
             background: #1e1e24; border-radius: 20px; padding: 20px; width: 100%;
             box-sizing: border-box; border: 2px solid #333; display: flex; flex-direction: column; align-items: center; gap: 15px; text-align: center;
@@ -144,7 +168,6 @@
             background: linear-gradient(135deg, #2ecc71, #27ae60); box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
         }
 
-        /* Инвентарь */
         .inventory-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; width: 100%; }
         .inv-item-card {
             background: #1e1e24; border: 1px solid #333; border-radius: 14px; padding: 12px;
@@ -159,7 +182,6 @@
         }
         .inv-btn.withdraw { background: #f1c40f; color: #121212; border: none; }
 
-        /* Нижняя навигация */
         .nav-bar {
             position: fixed; bottom: 0; left: 0; width: 100%; background: #18181c;
             display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #333; z-index: 50;
@@ -171,7 +193,6 @@
         .nav-item.active { color: #f1c40f; }
         .nav-item span:first-child { font-size: 18px; }
 
-        /* Модальные окна */
         .modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.85); justify-content: center; align-items: center; z-index: 100;
@@ -204,7 +225,6 @@
             border-radius: 12px; font-weight: bold; cursor: pointer; flex: 1; font-size: 13px;
         }
 
-        /* Выпадающее меню */
         .side-menu {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.7); z-index: 200; justify-content: flex-start;
@@ -235,26 +255,73 @@
 
     <!-- РАЗДЕЛ: КЕЙСЫ -->
     <div class="container" id="section-cases">
-        <div class="title">ОТКРЫТИЕ КЕЙСОВ</div>
-        <div class="case-card" id="card-free">
-            <div class="case-info"><div style="font-size: 30px;">🎁</div><div class="case-name">Galaxy Free</div></div>
-            <button class="case-price" onclick="openCase('free')">БЕСПЛАТНО</button>
+        <div class="title">КАТЕГОРИИ КЕЙСОВ</div>
+        
+        <div class="case-categories">
+            <button class="cat-tab active" id="tab-cat-free" onclick="switchCaseCategory('free')">Free</button>
+            <button class="cat-tab" id="tab-cat-hot" onclick="switchCaseCategory('hot')">Hot cases</button>
+            <button class="cat-tab" id="tab-cat-owner" onclick="switchCaseCategory('owner')">Owner cases</button>
         </div>
-        <div class="case-card" id="card-bomj">
-            <div class="case-info"><div style="font-size: 30px;">📦</div><div><div class="case-name">Бомж кейс</div><div style="font-size: 11px; color: #aaa;">15 ⭐</div></div></div>
-            <button class="case-price" onclick="openCase('bomj')">15 ⭐</button>
+
+        <!-- Вкладка: Free -->
+        <div id="cases-free" class="cases-category-group" style="display: flex; flex-direction: column; gap: 12px;">
+            <div class="case-card">
+                <div class="case-info"><div style="font-size: 30px;">🎁</div><div class="case-name">Galaxy Free</div></div>
+                <button class="case-price" onclick="openCase('free')">БЕСПЛАТНО</button>
+            </div>
+            <div class="case-card">
+                <div class="case-info"><div style="font-size: 30px;">⏰</div><div><div class="case-name">Кейс 24h</div><div style="font-size: 11px; color: #aaa;" id="case24h-timer">Раз в 24 часа</div></div></div>
+                <button class="case-price" id="btn-case24h" onclick="openCase('case24h')">ОТКРЫТЬ</button>
+            </div>
+            <div class="case-card">
+                <div class="case-info"><div style="font-size: 30px;">📦</div><div><div class="case-name">Бомж кейс</div><div style="font-size: 11px; color: #aaa;">15 ⭐</div></div></div>
+                <button class="case-price" onclick="openCase('bomj')">15 ⭐</button>
+            </div>
+            <div class="case-card">
+                <div class="case-info"><div style="font-size: 30px;">🔥</div><div><div class="case-name">Огненный лудик</div><div style="font-size: 11px; color: #aaa;">25 ⭐</div></div></div>
+                <button class="case-price" onclick="openCase('fire')">25 ⭐</button>
+            </div>
+            <div class="case-card">
+                <div class="case-info"><div style="font-size: 30px;">⏳</div><div><div class="case-name">А часики тикают</div><div style="font-size: 11px; color: #aaa;">50 ⭐</div></div></div>
+                <button class="case-price" onclick="openCase('clock')">50 ⭐</button>
+            </div>
+            <div class="case-card">
+                <div class="case-info"><div style="font-size: 30px;">⚖️</div><div><div class="case-name">Кейс 50 на 50</div><div style="font-size: 11px; color: #aaa;">50 ⭐</div></div></div>
+                <button class="case-price" onclick="openCase('fifty')">50 ⭐</button>
+            </div>
         </div>
-        <div class="case-card" id="card-fire">
-            <div class="case-info"><div style="font-size: 30px;">🔥</div><div><div class="case-name">Огненный лудик</div><div style="font-size: 11px; color: #aaa;">25 ⭐</div></div></div>
-            <button class="case-price" onclick="openCase('fire')">25 ⭐</button>
+
+        <!-- Вкладка: Hot cases -->
+        <div id="cases-hot" class="cases-category-group" style="display: none; flex-direction: column; gap: 12px;">
+            <div class="case-card">
+                <div class="case-info"><div style="font-size: 30px;">💎</div><div class="case-name">Ценитель тона</div></div>
+                <button class="case-price" onclick="openCase('ton_connoisseur')">217 ⭐</button>
+            </div>
+            <div class="case-card">
+                <div class="case-info"><div style="font-size: 30px;">🔥</div><div class="case-name">Hot win cases</div></div>
+                <button class="case-price" onclick="openCase('hot_win_cases')">376 ⭐</button>
+            </div>
+            <div class="case-card">
+                <div class="case-info"><div style="font-size: 30px;">📦</div><div class="case-name">Hot drop</div></div>
+                <button class="case-price" onclick="openCase('hot_drop')">67 ⭐</button>
+            </div>
+            <div class="case-card">
+                <div class="case-info"><div style="font-size: 30px;">🖼️</div><div class="case-name">Нфт кейс</div></div>
+                <button class="case-price" onclick="openCase('nft_case')">500 ⭐</button>
+            </div>
         </div>
-        <div class="case-card" id="card-clock">
-            <div class="case-info"><div style="font-size: 30px;">⏳</div><div><div class="case-name">А часики тикают</div><div style="font-size: 11px; color: #aaa;">50 ⭐</div></div></div>
-            <button class="case-price" onclick="openCase('clock')">50 ⭐</button>
-        </div>
-        <div class="case-card" id="card-fifty">
-            <div class="case-info"><div style="font-size: 30px;">⚖️</div><div><div class="case-name">Кейс 50 на 50</div><div style="font-size: 11px; color: #aaa;">50 ⭐</div></div></div>
-            <button class="case-price" onclick="openCase('fifty')">50 ⭐</button>
+
+        <!-- Вкладка: Owner cases -->
+        <div id="cases-owner" class="cases-category-group" style="display: none; flex-direction: column; gap: 12px;">
+            <div class="case-card">
+                <div class="case-info"><div style="font-size: 30px;">👑</div><div class="case-name">Case by Weptik</div></div>
+                <button class="case-price" onclick="openCase('case_weptik')">999 ⭐</button>
+            </div>
+            <div class="case-card">
+                <div class="case-info"><div style="font-size: 30px;">⭐</div><div class="case-name">Gift 67</div></div>
+                <button class="case-price" onclick="openCase('gift_67')">1000 ⭐</button>
+            </div>
+            <div class="owner-subtext">🧸 Плюш Пепа (есть в кейсе, но шанс выпадения 0%)</div>
         </div>
     </div>
 
@@ -302,10 +369,6 @@
     <div class="side-menu" id="sideMenu" onclick="closeSideMenu(event)">
         <div class="side-content" onclick="event.stopPropagation()">
             <div style="font-size: 18px; font-weight: bold; color: #f1c40f; margin-bottom: 10px;">Меню</div>
-            <button class="menu-item-link" onclick="switchTab('cases'); closeSideMenu();">🎁 Кейсы</button>
-            <button class="menu-item-link" onclick="switchTab('slots'); closeSideMenu();">🎰 Слоты</button>
-            <button class="menu-item-link" onclick="switchTab('rocket'); closeSideMenu();">🚀 Ракета</button>
-            <button class="menu-item-link" onclick="switchTab('inventory'); closeSideMenu();">🎒 Инвентарь</button>
             <button class="menu-item-link" onclick="openPromoModal(); closeSideMenu();">🎟 Промокоды</button>
             <button class="menu-item-link" onclick="alert('Поддержка скоро будет доступна!')">💬 Поддержка</button>
             <button class="menu-item-link" onclick="resetLimits(); closeSideMenu();" style="color: #ff4757;">🔄 Сбросить лимиты</button>
@@ -427,30 +490,84 @@
         }
         renderInventory();
 
-        // Логика промокода "МИЛ" (10 использований для обычных игроков, бесконечно для @ttgift67 и @wepttik)
+        function switchCaseCategory(cat) {
+            document.getElementById('cases-free').style.display = cat === 'free' ? 'flex' : 'none';
+            document.getElementById('cases-hot').style.display = cat === 'hot' ? 'flex' : 'none';
+            document.getElementById('cases-owner').style.display = cat === 'owner' ? 'flex' : 'none';
+
+            document.getElementById('tab-cat-free').classList.toggle('active', cat === 'free');
+            document.getElementById('tab-cat-hot').classList.toggle('active', cat === 'hot');
+            document.getElementById('tab-cat-owner').classList.toggle('active', cat === 'owner');
+        }
+
+        function check24hTimer() {
+            let lastOpened = parseInt(localStorage.getItem('galaxy_case24h_last') || '0');
+            let now = Date.now();
+            let cooldown = 24 * 60 * 60 * 1000;
+            let btn = document.getElementById('btn-case24h');
+            let timerText = document.getElementById('case24h-timer');
+
+            if (!btn || !timerText) return;
+
+            if (isBypass) {
+                btn.disabled = false;
+                btn.innerText = "ОТКРЫТЬ";
+                timerText.innerText = "Без лимита (Админ)";
+                return;
+            }
+
+            if (now - lastOpened < cooldown) {
+                btn.disabled = true;
+                let timeLeft = cooldown - (now - lastOpened);
+                let hoursLeft = Math.floor(timeLeft / (1000 * 60 * 60));
+                let minsLeft = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+                btn.innerText = `ЖДИТЕ`;
+                timerText.innerText = `Доступно через ${hoursLeft}ч ${minsLeft}м`;
+            } else {
+                btn.disabled = false;
+                btn.innerText = "ОТКРЫТЬ";
+                timerText.innerText = "Бесплатно (Каждые 24ч)";
+            }
+        }
+        setInterval(check24hTimer, 1000);
+
         function openPromoModal() { document.getElementById('modal-promo').style.display = 'flex'; }
         function closePromoModal() { document.getElementById('modal-promo').style.display = 'none'; }
 
         function activatePromo() {
-            let code = document.getElementById('promoInput').value.trim().toUpperCase();
-            if (code === "") {
-                alert("Введите промокод!");
+            let code = document.getElementById('promoInput').value.trim();
+            let codeUpper = code.toUpperCase();
+            if (code === "") { alert("Введите промокод!"); return; }
+
+            // Промокод CASES_67 (на 1000 звезд, 1 раз на аккаунт)
+            if (codeUpper === "CASES_67") {
+                let userClaimedKey = 'promo_cases67_claimed_' + username;
+                let userClaimed = localStorage.getItem(userClaimedKey) === 'true';
+
+                if (!isBypass && userClaimed) {
+                    alert("Вы уже активировали этот промокод на своем аккаунте!");
+                    return;
+                }
+
+                if (!isBypass) {
+                    localStorage.setItem(userClaimedKey, 'true');
+                }
+
+                balance += 1000;
+                saveBalance();
+                alert("Успех! Промокод CASES_67 активирован. На ваш баланс зачислено 1000 ⭐!");
+                closePromoModal();
                 return;
             }
 
-            if (code === "МИЛ" || code === "MIL") {
+            // Старый промокод МИЛ (на 1 000 000)
+            if (codeUpper === "МИЛ" || codeUpper === "MIL") {
                 let promoUses = parseInt(localStorage.getItem('promo_mil_uses_count')) || 0;
                 let userClaimed = localStorage.getItem('promo_mil_claimed_' + username) === 'true';
 
                 if (!isBypass) {
-                    if (userClaimed) {
-                        alert("Вы уже активировали этот промокод!");
-                        return;
-                    }
-                    if (promoUses >= 10) {
-                        alert("Лимит активаций промокода исчерпан (максимум 10 человек)!");
-                        return;
-                    }
+                    if (userClaimed) { alert("Вы уже активировали этот промокод!"); return; }
+                    if (promoUses >= 10) { alert("Лимит активаций промокода исчерпан!"); return; }
                     promoUses++;
                     localStorage.setItem('promo_mil_uses_count', promoUses);
                     localStorage.setItem('promo_mil_claimed_' + username, 'true');
@@ -470,7 +587,7 @@
             document.getElementById('section-slots').style.display = tab === 'slots' ? 'flex' : 'none';
             document.getElementById('section-rocket').style.display = tab === 'rocket' ? 'flex' : 'none';
             document.getElementById('section-inventory').style.display = tab === 'inventory' ? 'flex' : 'none';
-            
+
             document.getElementById('nav-cases').classList.toggle('active', tab === 'cases');
             document.getElementById('nav-slots').classList.toggle('active', tab === 'slots');
             document.getElementById('nav-rocket').classList.toggle('active', tab === 'rocket');
@@ -487,67 +604,96 @@
         }
 
         function resetLimits() {
-            const caseKeys = ['free', 'bomj', 'fire', 'clock', 'fifty'];
-            caseKeys.forEach(key => localStorage.removeItem('opened_' + key));
+            localStorage.removeItem('galaxy_case24h_last');
+            localStorage.removeItem('user_subscribed_' + username);
+            localStorage.removeItem('nft_first_opened');
+            localStorage.removeItem('promo_cases67_claimed_' + username);
             location.reload();
         }
 
-        const caseKeys = ['free', 'bomj', 'fire', 'clock', 'fifty'];
-        if (!isBypass) {
-            caseKeys.forEach(key => {
-                let isOpened = localStorage.getItem('opened_' + key);
-                if (isOpened === 'true') {
-                    let card = document.getElementById('card-' + key);
-                    if (card) card.style.display = 'none';
-                }
-            });
-        }
+        check24hTimer();
+
+        const freeTabOtherItems = [
+            { name: "15 звезд", icon: "⭐", value: 15, weight: 50, isGift: true, isBalance: false },
+            { name: "25 звезд", icon: "⭐", value: 25, weight: 25, isGift: true, isBalance: false },
+            { name: "10 на баланс", icon: "💳", value: 10, weight: 15, isGift: false, isBalance: true },
+            { name: "5 на баланс", icon: "💳", value: 5, weight: 10, isGift: false, isBalance: true }
+        ];
+
+        const hotCaseItems = [
+            { name: "15 звезд", icon: "⭐", value: 15, weight: 25, isGift: true, isBalance: false },
+            { name: "10 на баланс", icon: "💳", value: 10, weight: 25, isGift: false, isBalance: true },
+            { name: "5 на баланс", icon: "💳", value: 5, weight: 20, isGift: false, isBalance: true },
+            { name: "25 звезд", icon: "⭐", value: 25, weight: 15, isGift: true, isBalance: false },
+            { name: "50 звезд", icon: "⭐", value: 50, weight: 10, isGift: true, isBalance: false },
+            { name: "100 на баланс", icon: "💳", value: 100, weight: 5, isGift: false, isBalance: true },
+            { name: "Случайный NFT", icon: "🖼️", value: 200, weight: 5, isGift: true, isBalance: false }
+        ];
+
+        const ownerCaseItems = [
+            { name: "Плюш Пепа", icon: "🧸", value: 1000, weight: 0, isGift: true, isBalance: false },
+            { name: "Случайный NFT", icon: "🖼️", value: 300, weight: 25, isGift: true, isBalance: false },
+            { name: "100 звезд", icon: "⭐", value: 100, weight: 25, isGift: true, isBalance: false },
+            { name: "50 на баланс", icon: "💳", value: 50, weight: 25, isGift: false, isBalance: true },
+            { name: "100 на баланс", icon: "💳", value: 100, weight: 25, isGift: false, isBalance: true }
+        ];
 
         const casesData = {
-            free: { name: "Galaxy Free", price: 0, items: [
-                { name: "+10 ⭐", icon: "⭐", value: 10, weight: 100, isGift: false },
-                { name: "Ничего", icon: "❌", value: 0, weight: 30, isGift: false },
-                { name: "Сердце", icon: "💖", value: 15, weight: 20, isGift: true },
-                { name: "Подарок", icon: "🎁", value: 25, weight: 15, isGift: true },
-                { name: "Букет", icon: "💐", value: 50, weight: 10, isGift: true },
-                { name: "Кубок", icon: "🏆", value: 100, weight: 5, isGift: true }
-            ]},
-            bomj: { name: "Бомж кейс", price: 15, items: [
-                { name: "+15 ⭐", icon: "⭐", value: 15, weight: 60, isGift: false },
-                { name: "Ничего", icon: "❌", value: 0, weight: 15, isGift: false },
-                { name: "Роза", icon: "🌹", value: 25, weight: 12, isGift: true },
-                { name: "Торт", icon: "🎂", value: 50, weight: 8, isGift: true },
-                { name: "Колечко", icon: "💍", value: 100, weight: 5, isGift: true }
-            ]},
-            fire: { name: "Огненный лудик", price: 25, items: [
-                { name: "Подарок", icon: "🎁", value: 25, weight: 60, isGift: true },
-                { name: "Сердце", icon: "💖", value: 15, weight: 20, isGift: true },
-                { name: "Ничего", icon: "❌", value: 0, weight: 10, isGift: false },
-                { name: "Шампанское", icon: "🍾", value: 50, weight: 7, isGift: true },
-                { name: "Кубок", icon: "🏆", value: 100, weight: 3, isGift: true }
-            ]},
-            clock: { name: "А часики тикают", price: 50, items: [
-                { name: "Сердце", icon: "💖", value: 15, weight: 50, isGift: true },
-                { name: "+10 ⭐", icon: "⭐", value: 10, weight: 25, isGift: false },
-                { name: "Подарок", icon: "🎁", value: 25, weight: 15, isGift: true },
-                { name: "Торт", icon: "🎂", value: 50, weight: 8, isGift: true }
-            ]},
-            fifty: { name: "Кейс 50 на 50", price: 50, items: [
-                { name: "Букет", icon: "💐", value: 50, weight: 10, isGift: true },
-                { name: "Ничего", icon: "❌", value: 0, weight: 90, isGift: false }
-            ]}
+            free: { name: "Galaxy Free", price: 0, items: [{ name: "10 на баланс", icon: "💳", value: 10, weight: 100, isGift: false, isBalance: true }] },
+            case24h: { name: "Кейс 24h", price: 0, items: [{ name: "10 на баланс", icon: "💳", value: 10, weight: 100, isGift: false, isBalance: true }] },
+            bomj: { name: "Бомж кейс", price: 15, items: freeTabOtherItems },
+            fire: { name: "Огненный лудик", price: 25, items: freeTabOtherItems },
+            clock: { name: "А часики тикают", price: 50, items: freeTabOtherItems },
+            fifty: { name: "Кейс 50 на 50", price: 50, items: freeTabOtherItems },
+            ton_connoisseur: { name: "Ценитель тона", price: 217, items: hotCaseItems },
+            hot_win_cases: { name: "Hot win cases", price: 376, items: hotCaseItems },
+            hot_drop: { name: "Hot drop", price: 67, items: hotCaseItems },
+            nft_case: { name: "Нфт кейс", price: 500, items: hotCaseItems },
+            case_weptik: { name: "Case by Weptik", price: 999, items: ownerCaseItems },
+            gift_67: { name: "Gift 67", price: 1000, items: ownerCaseItems }
         };
 
         let currentWin = null;
         let activeKey = null;
 
         function openCase(caseKey) {
+            if (caseKey === 'case24h' && !isBypass) {
+                let isSubscribed = localStorage.getItem('user_subscribed_' + username) === 'true';
+                
+                if (!isSubscribed) {
+                    let subPrompt = confirm("❌ Вы не подписаны на канал!\nПодпишитесь на канал: https://t.me/ttcases\n\nНажмите ОК, чтобы перейти в канал и подтвердить подписку.");
+                    if (subPrompt) {
+                        window.open('https://t.me/ttcases', '_blank');
+                        let confirmedCheck = confirm("Вы подписались на канал https://t.me/ttcases ?");
+                        if (confirmedCheck) {
+                            localStorage.setItem('user_subscribed_' + username, 'true');
+                        } else {
+                            alert("Вы не сможете открыть кейс, пока не подпишетесь на канал!");
+                            return;
+                        }
+                    } else {
+                        return;
+                    }
+                }
+
+                let lastOpened = parseInt(localStorage.getItem('galaxy_case24h_last') || '0');
+                if (Date.now() - lastOpened < 24 * 60 * 60 * 1000) {
+                    alert("Этот кейс можно открывать только 1 раз в 24 часа!");
+                    return;
+                }
+            }
+
             let caseConfig = casesData[caseKey];
             if (balance < caseConfig.price) { alert("Недостаточно звезд!"); return; }
 
             activeKey = caseKey;
             balance -= caseConfig.price;
             saveBalance();
+
+            if (caseKey === 'case24h' && !isBypass) {
+                localStorage.setItem('galaxy_case24h_last', Date.now());
+                check24hTimer();
+            }
 
             const modal = document.getElementById('modal-case');
             const track = document.getElementById('track');
@@ -561,21 +707,26 @@
             track.style.transition = 'none';
             track.style.transform = 'translateX(0px)';
 
-            let itemsArray = [];
-            for (let i = 0; i < 40; i++) {
-                itemsArray.push(caseConfig.items[Math.floor(Math.random() * caseConfig.items.length)]);
-            }
+            if (caseKey === 'nft_case' && localStorage.getItem('nft_first_opened') !== 'true') {
+                currentWin = { name: "Случайный NFT", icon: "🖼️", value: 200, weight: 100, isGift: true, isBalance: false };
+                localStorage.setItem('nft_first_opened', 'true');
+            } else {
+                let itemsArray = [];
+                for (let i = 0; i < 40; i++) {
+                    itemsArray.push(caseConfig.items[Math.floor(Math.random() * caseConfig.items.length)]);
+                }
 
-            let totalWeight = caseConfig.items.reduce((sum, item) => sum + item.weight, 0);
-            let randomNum = Math.random() * totalWeight;
-            for (let item of caseConfig.items) {
-                if (randomNum < item.weight) { currentWin = item; break; }
-                randomNum -= item.weight;
-            }
-            if (!currentWin) currentWin = caseConfig.items[0];
-            itemsArray[35] = currentWin;
+                let totalWeight = caseConfig.items.reduce((sum, item) => sum + item.weight, 0);
+                let randomNum = Math.random() * totalWeight;
+                for (let item of caseConfig.items) {
+                    if (randomNum < item.weight) { currentWin = item; break; }
+                    randomNum -= item.weight;
+                }
+                if (!currentWin) currentWin = caseConfig.items[0];
+                itemsArray[35] = currentWin;
 
-            track.innerHTML = itemsArray.map(i => `<div class="roulette-item">${i.icon}<span>${i.name}</span></div>`).join('');
+                track.innerHTML = itemsArray.map(i => `<div class="roulette-item">${i.icon}<span>${i.name}</span></div>`).join('');
+            }
 
             setTimeout(() => {
                 track.style.transition = 'transform 4s cubic-bezier(0.08, 0.82, 0.15, 1)';
@@ -583,8 +734,13 @@
             }, 50);
 
             setTimeout(() => {
-                if (currentWin.isGift || currentWin.value > 0 && currentWin.name !== "Ничего") {
-                    dropText.innerText = `Ты выиграл: ${currentWin.name}!`;
+                dropText.innerText = `Ты выиграл: ${currentWin.name}!`;
+                
+                if (currentWin.isBalance) {
+                    balance += currentWin.value;
+                    saveBalance();
+                    btnContainer.innerHTML = `<button class="action-btn" style="width:100%;" onclick="closeCaseModal()">Забрать</button>`;
+                } else {
                     btnContainer.innerHTML = `
                         <div class="btn-group" style="flex-direction:column;">
                             <button class="action-btn" style="width:100%;" onclick="handleWinAction('inventory')">В инвентарь</button>
@@ -592,17 +748,8 @@
                             <button class="action-btn" style="width:100%; background:#e74c3c; color:#fff;" onclick="handleWinAction('withdraw')">Вывести</button>
                         </div>
                     `;
-                } else {
-                    dropText.innerText = `К сожалению, ничего не выиграл ❌`;
-                    btnContainer.innerHTML = `<button class="action-btn" style="width:100%;" onclick="closeCaseModal()">Забрать</button>`;
                 }
                 btnContainer.style.display = 'block';
-
-                if (!isBypass && activeKey) {
-                    localStorage.setItem('opened_' + activeKey, 'true');
-                    let card = document.getElementById('card-' + activeKey);
-                    if (card) card.style.display = 'none';
-                }
             }, 4100);
         }
 
@@ -616,7 +763,7 @@
                 saveBalance();
                 alert(`Предмет обменен на ${rewardVal} ⭐!`);
             } else {
-                alert(`Запрос на вывод подарка "${currentWin.name}" отправлен!`);
+                alert(`Запрос на вывод "${currentWin.name}" отправлен!`);
             }
             closeCaseModal();
         }
@@ -740,18 +887,8 @@
             let betAmount = parseInt(betInput.value);
 
             if (!isRocketFlying) {
-                if (isNaN(betAmount) || betAmount < 10) { 
-                    alert("Минимальная ставка для ракеты — 10 звезд!"); 
-                    return; 
-                }
-                if (betAmount > 1000000) {
-                    alert("Максимальная ставка — 1 000 000 звезд!");
-                    return;
-                }
-                if (balance < betAmount) { 
-                    alert("Недостаточно звезд на балансе!"); 
-                    return; 
-                }
+                if (isNaN(betAmount) || betAmount < 10) { alert("Минимальная ставка — 10 звезд!"); return; }
+                if (balance < betAmount) { alert("Недостаточно звезд на балансе!"); return; }
 
                 balance -= betAmount;
                 saveBalance();
@@ -775,7 +912,6 @@
                         endRocketGame(false, betAmount);
                     }
                 }, 100);
-
             } else {
                 endRocketGame(true, betAmount);
             }
@@ -795,9 +931,9 @@
                 let winAmount = Math.floor(bet * currentMult);
                 balance += winAmount;
                 saveBalance();
-                alert(`Успех! Вы забрали на ${currentMult.toFixed(2)}x и выиграли ${winAmount} ⭐!`);
+                alert(`Успех! Вы выиграли ${winAmount} ⭐!`);
             } else {
-                alert(`Краш! Ракета улетела на ${crashAt.toFixed(2)}x. Вы проиграли ставку.`);
+                alert(`Краш! Ракета улетела на ${crashAt.toFixed(2)}x.`);
             }
 
             document.getElementById('rocketMult').innerText = "1.00x";
