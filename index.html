@@ -940,32 +940,6 @@
             document.getElementById('rocketWinShow').innerText = "Выигрыш: 0 ⭐";
             document.getElementById('rocketIcon').style.transform = 'translateY(0px)';
         }
-        from aiogram.types import LabeledPrice, PreCheckoutQuery
-
-# 1. Команда /donate — отправляет счёт на оплату Звёздами
-@dp.message(Command("donate"))
-async def cmd_donate(message: Message):
-prices = [LabeledPrice(label="Поддержка проекта", amount=1)] # 1 звезда для теста
-await message.answer_invoice(
-title="Донат разработчику",
-description="Поддержите бота и получите звезды на баланс!",
-payload="donate_stars_payload",
-currency="XTR", # Обязательно "XTR" для Telegram Stars
-prices=prices,
-start_parameter="donate"
-)
-
-# 2. Подтверждение перед покупкой (телеграм требует обязательно)
-@dp.pre_checkout_query()
-async def process_pre_checkout_query(pre_checkout_query: PreCheckoutQuery):
-await bot.answer_pre_checkout_query(pre_checkout_query.id, ok=True)
-
-# 3. Успешная оплата — начисляем баланс
-@dp.message(F.successful_payment)
-async def process_successful_payment(message: Message):
-stars_paid = message.successful_payment.total_amount
-# ТУТ ПОТОМ ДОБАВИШЬ СОХРАНЕНИЕ В БАЗУ ДАННЫХ
-await message.answer(f"Спасибо за донат! ✨ Вам зачислено {stars_paid} звёзд.")
     </script>
 </body>
 </html>
