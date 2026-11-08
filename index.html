@@ -134,6 +134,8 @@ input:checked+.slider{background:#f1c40f}input:checked+.slider:before{transform:
   <div class="side-content">
     <div style="font-size:18px;font-weight:bold;color:#f1c40f;margin-bottom:10px">Меню</div>
     <button class="menu-item-link" onclick="openPromo();closeMenu()">🎟 Промокоды</button>
+    <button class="menu-item-link" id="wipeBalBtn" style="display:none;color:#ff4757" onclick="adminReset('balance');closeMenu()">🧹 Обнулить баланс всем</button>
+    <button class="menu-item-link" id="wipeAllBtn" style="display:none;color:#ff4757" onclick="adminReset('all');closeMenu()">🗑 Обнулить баланс и инвентарь всем</button>
     <button class="menu-item-link" id="resetBtn" style="display:none;color:#ff4757" onclick="resetLimits()">🔄 Сбросить лимиты (админ)</button>
   </div>
 </div>
@@ -422,9 +424,35 @@ function tab(t){
   $('demoContainer').style.visibility=t==='slots'?'visible':'hidden'; // без прыжков шапки
 }
 
+// ---------- Глобальный сброс (нужен сервер api_server.py) ----------
+const API_URL=''; // адрес сервера с HTTPS, например 'https://api.example.com' (без / в конце)
+const api=async(path,body)=>{const r=await fetch(API_URL+path,body?{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}:{});return r.json()};
+function wipeLocal(full){setBal(-balance);if(full){inv=[];saveInv()}}
+async function syncEpochs(){ // у игрока: если админ сделал сброс — обнуляем данные на этом устройстве
+  if(!API_URL)return;
+  try{
+    const e=await api('/api/epoch'),sb=ls.get('seen_bal_epoch',null),sf=ls.get('seen_full_epoch',null);
+    if(sb!==null&&sf!==null){
+      if(e.full>parseInt(sf))wipeLocal(true);
+      else if(e.bal>parseInt(sb))wipeLocal(false);
+    }
+    ls.set('seen_bal_epoch',e.bal);ls.set('seen_full_epoch',e.full);
+  }catch(err){}
+}
+async function adminReset(mode){
+  if(!isAdmin)return;
+  if(!API_URL){say('Сервер не подключён: укажи API_URL в index.html и запусти api_server.py');return}
+  if(!confirm(mode==='all'?'Обнулить баланс И инвентарь у ВСЕХ игроков?':'Обнулить баланс у ВСЕХ игроков?'))return;
+  try{
+    const r=await api('/api/admin/reset',{initData:tg.initData||'',mode});
+    if(r.ok){await syncEpochs();say('Готово. У игроков данные обнулятся при следующем открытии приложения (или в течение 30 секунд).')}
+    else say('Ошибка: '+(r.error||'нет доступа'));
+  }catch(err){say('Нет связи с сервером')}
+}
+
 $('grid').innerHTML=Array(15).fill('<div class="slot-cell">🎁<span>Подарок</span></div>').join('');
-markLines();renderHist();renderBots();if(isAdmin)$('resetBtn').style.display='block';
-renderCases();renderInv();setBal(0);tick();setInterval(tick,1000);
+markLines();renderHist();renderBots();if(isAdmin){['resetBtn','wipeBalBtn','wipeAllBtn'].forEach(id=>$(id).style.display='block')}
+renderCases();renderInv();setBal(0);tick();setInterval(tick,1000);syncEpochs();setInterval(syncEpochs,30000);
 </script>
 </body>
 </html>
