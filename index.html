@@ -425,7 +425,7 @@ function tab(t){
 }
 
 // ---------- Глобальный сброс (нужен сервер api_server.py) ----------
-const API_URL=''; // адрес сервера с HTTPS, например 'https://api.example.com' (без / в конце)
+const API_URL='https://galaxy-api-y6ei.onrender.com'; // адрес сервера с HTTPS, например 'https://api.example.com' (без / в конце)
 const api=async(path,body)=>{const r=await fetch(API_URL+path,body?{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}:{});return r.json()};
 function wipeLocal(full){setBal(-balance);if(full){inv=[];saveInv()}}
 async function syncEpochs(){ // у игрока: если админ сделал сброс — обнуляем данные на этом устройстве
