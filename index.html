@@ -134,7 +134,6 @@ input:checked+.slider{background:#f1c40f}input:checked+.slider:before{transform:
   <div class="side-content">
     <div style="font-size:18px;font-weight:bold;color:#f1c40f;margin-bottom:10px">Меню</div>
     <button class="menu-item-link" onclick="openPromo();closeMenu()">🎟 Промокоды</button>
-    <button class="menu-item-link" onclick="say('Поддержка скоро будет доступна!')">💬 Поддержка</button>
     <button class="menu-item-link" id="resetBtn" style="display:none;color:#ff4757" onclick="resetLimits()">🔄 Сбросить лимиты (админ)</button>
   </div>
 </div>
@@ -203,21 +202,22 @@ function sellAll(){const t=inv.reduce((s,x)=>s+(x.value||50),0);inv=[];saveInv()
 // ---------- Кейсы ----------
 const S=(v,w)=>({n:v+' звезд',i:'⭐',v,w}),B=(v,w)=>({n:v+' на баланс',i:'💳',v,w,b:1});
 const NFT=(v,w)=>({n:'Случайный NFT',i:'🖼️',v,w});
-const ONLY10=[B(10,100)];
-// Для красоты в рулетке мелькают 15/25/50/100 ⭐, но выпадает всегда только 10 на баланс
-const FREE_SHOW=[S(15,0),S(25,0),S(50,0),S(100,0),B(10,0)];
+const ONLY5=[B(5,100)];
+// Для красоты в рулетке мелькают другие призы, но выпадает всегда только 5 на баланс
+const FREE_SHOW=[S(15,0),S(25,0),S(50,0),S(100,0),B(10,0),B(5,0),NFT(200,0)];
 const BASE=[S(15,50),S(25,25),B(10,15),B(5,10)];
 const HOT=[S(15,25),B(10,25),B(5,20),S(25,15),S(50,10),B(100,5),NFT(200,5)];
+const HOT_TON=[S(15,26),B(10,26),B(5,21),S(25,15),S(50,6),B(100,4),NFT(200,2)]; // NFT 2%, сумма весов = 100
 const OWNER=[{n:'Плюш Пепа',i:'🧸',v:1000,w:10},NFT(300,20),S(100,20),B(50,25),B(100,25)]; // сумма весов = 100
 const pepaPct=Math.round(OWNER[0].w/OWNER.reduce((a,x)=>a+x.w,0)*100); // надпись берёт шанс из реальных весов
 const CASES=[
-  {k:'free',cat:'free',n:'Galaxy Free',i:'🎁',p:0,it:ONLY10,show:FREE_SHOW,max:2},
-  {k:'case24h',cat:'free',n:'Кейс 24h',i:'⏰',p:0,it:ONLY10,show:FREE_SHOW,cd:86400000,sub:1},
+  {k:'free',cat:'free',n:'Galaxy Free',i:'🎁',p:0,it:ONLY5,show:FREE_SHOW,max:2},
+  {k:'case24h',cat:'free',n:'Кейс 24h',i:'⏰',p:0,it:ONLY5,show:FREE_SHOW,cd:86400000,sub:1},
   {k:'bomj',cat:'free',n:'Бомж кейс',i:'📦',p:15,it:BASE,max:2},
   {k:'fire',cat:'free',n:'Огненный лудик',i:'🔥',p:25,it:BASE,max:2},
   {k:'clock',cat:'free',n:'А часики тикают',i:'⏳',p:50,it:BASE,max:2},
   {k:'fifty',cat:'free',n:'Кейс 50 на 50',i:'⚖️',p:50,it:BASE,max:2},
-  {k:'ton',cat:'hot',n:'Ценитель тона',i:'💎',p:217,it:HOT},
+  {k:'ton',cat:'hot',n:'Ценитель тона',i:'💎',p:217,it:HOT_TON},
   {k:'hotwin',cat:'hot',n:'Hot win cases',i:'🔥',p:376,it:HOT},
   {k:'hotdrop',cat:'hot',n:'Hot drop',i:'📦',p:67,it:HOT},
   {k:'nft',cat:'hot',n:'Нфт кейс',i:'🖼️',p:500,it:HOT,firstNft:1},
@@ -297,7 +297,7 @@ function closeCase(){$('modal-case').style.display='none';busy=false}
 
 // ---------- Слоты ----------
 let demo=true,selLines=1,spinning=false;
-const SYM=[{n:'Сердце',i:'💖',v:15},{n:'Подарок',i:'🎁',v:25},{n:'Роза',i:'🌹',v:25},{n:'Торт',i:'🎂',v:50},{n:'Кубок',i:'🏆',v:100},{n:'Брил.',i:'💎',v:150}]; // меньше символов = чаще выигрыш
+const SYM=[{n:'Сердце',i:'💖',v:15},{n:'Подарок',i:'🎁',v:25},{n:'Торт',i:'🎂',v:50},{n:'Кубок',i:'🏆',v:100},{n:'Брил.',i:'💎',v:150}]; // меньше символов = чаще выигрыш
 const LINES=[[5,6,7,8,9],[0,1,2,3,4],[10,11,12,13,14]]; // середина, верх, низ
 const rnd=()=>SYM[Math.floor(Math.random()*SYM.length)];
 const draw=(c,s)=>{c.innerHTML=`${s.i}<span>${s.n}</span>`};
