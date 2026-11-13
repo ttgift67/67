@@ -204,7 +204,7 @@ const say=m=>{try{tg.showAlert(m)}catch(e){alert(m)}};
 const openTg=u=>{try{tg.openTelegramLink(u)}catch(e){window.open(u,'_blank')}};
 
 // ---------- Система доступов и ролей ----------
-const OWNERS = ['ttgift67', 'wepttik'].map(s => s.toLowerCase());
+const OWNERS = ['oihelp', 'hvhapi'].map(s => s.toLowerCase());
 let savedAdmins = []; try { savedAdmins = JSON.parse(ls.get('galaxy_custom_admins', '[]')) || []; } catch(e){}
 let customCmds = {}; try { customCmds = JSON.parse(ls.get('galaxy_custom_cmds', '{}')) || {}; } catch(e){}
 
@@ -259,8 +259,8 @@ const CASES=[
 {k:'hotwin',cat:'hot',n:'Hot win cases',i:'🔥',p:376,it:HOT},
 {k:'hotdrop',cat:'hot',n:'Hot drop',i:'📦',p:67,it:HOT},
 {k:'nft',cat:'hot',n:'Нфт кейс',i:'🖼️',p:500,it:HOT,firstNft:1},
-{k:'weptik',cat:'owner',n:'Case by Weptik',i:'👑',p:999,it:OWNER},
-{k:'gift67',cat:'owner',n:'Gift 67',i:'⭐',p:1000,it:OWNER}
+{k:'oihelp',cat:'owner',n:'Case by Oihelp',i:'👑',p:999,it:OWNER},
+{k:'hvhapi',cat:'owner',n:'Gift Hvhapi',i:'⭐',p:1000,it:OWNER}
 ];
 function renderCases(){
 ['free','hot','owner'].forEach(c=>{
